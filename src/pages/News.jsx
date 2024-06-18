@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NewsItem from '../components/NewsItem';
 import Spinner from '../components/Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useSearch } from '../contexts/useSearch';
 
 const News = ({ category, setProgress, API_KEY }) => {
   const [news, setNews] = useState([]);
@@ -9,16 +10,18 @@ const News = ({ category, setProgress, API_KEY }) => {
   const [page, setPage] = useState(1);
   const [totalResult, setTotalResult] = useState(0);
 
+  const {searchText, setSearchText} = useSearch()
+
   useEffect(() => {
     setPage(1)
     getNews();
-  }, [category]);
+  }, [category,searchText]);
 
   const getNews = async () => {
     setLoading(true);
     setProgress(0)
 
-    const URL = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${API_KEY}&page=${page}&pageSize=20`;
+    const URL = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&q=${searchText}&apiKey=${API_KEY}&page=${page}&pageSize=20`;
     try {
       setProgress(30)
 
